@@ -21,6 +21,30 @@ class Recipe:
             print("{0}. {1}\n".format(stepNumber,step))
             stepNumber += 1
 
+    def edit(self):
+        print("===========================")
+        self.print()
+        print("===========================")
+        choice = input("""
+
+1. Edit Title
+2. Add Ingredient
+3. Add Step
+: """)
+        if(choice == "1"):
+            newTitle = input("Enter new recipe title: ")
+            self.title = newTitle
+        if(choice == "2"):
+            ingredNumber = len(self.ingredients)+1
+            ingred = input("\nWhat is ingredient #{}?: ".format(ingredNumber))
+            amount = input("How much {} is required?: ".format(ingred))
+            self.ingredients[ingred] = amount
+        if(choice == "3"):
+            step = input("\nWhat is step #{}?: ".format(len(self.instructions)))
+            instructions.append(step)
+
+        self.saveToFile()
+
     def saveToFile(self):
         filePath = os.path.abspath(os.path.join(recipeFolder,self.title+'.json'))
         with open(filePath, 'w') as f:
@@ -36,6 +60,7 @@ class Recipe:
             return recipe
         else:
             return None
+    
         
     
 
@@ -60,6 +85,9 @@ class RecipeManager:
             RecipeManager.printRecipes(allRecipes)
         elif(choice == "3"):
             RecipeManager.searchRecipe()
+        elif(choice == "4"):
+            edit = lambda r : r.edit()
+            RecipeManager.selectRecipe(edit)
         if(choice == "6"):
             return
 
@@ -116,16 +144,14 @@ class RecipeManager:
 
     def printRecipes(searchCondition):
         print("\nRESULTS:")
-        numOfResults = 0
         files = RecipeManager.getRecipeFiles()
         for f in files:           
                 recipe = Recipe.openFromFile(f)
                 if(searchCondition(recipe)):
                     print("\n==================================")
                     recipe.print()
-                    numOfResults += 1
 
-        if(numOfResults == 0):
+        if(len(files) == 0):
             print("(~~Nothing found~~)")
 
     def searchRecipe():
@@ -143,6 +169,32 @@ class RecipeManager:
             searchCondition = lambda r : term.lower() in map(str.lower, r.ingredients)
             print("Recipes found with '{}'".format(term))
             RecipeManager.printRecipes(searchCondition)
+
+    def selectRecipe(func):
+        print("\nRECIPES: \n")
+        files = RecipeManager.getRecipeFiles()
+        #print recipes as a list to present to user
+        for f in files:
+            print(f.split('.')[0])
+
+        if(len(files) == 0):
+            print("(~~Nothing found~~)")
+            
+        #ask which recipe to select
+        title = input("\nWhich recipe do you want to select?: ")
+
+        #check user input is valid
+        if(title.lower() + '.json' in map(str.lower,files)):
+            print("recipe exists!")
+        else:
+            print("invalid recipe")
+            RecipeManager.editRecipe()
+
+        selectedRecipe = Recipe.openFromFile(title + '.json')
+        #run function on recipe
+        func(selectedRecipe)
+        
+        
                   
 RecipeManager.start()
 
