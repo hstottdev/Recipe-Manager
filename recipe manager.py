@@ -1,4 +1,7 @@
 import json
+import os
+cwd = os.getcwd()
+recipeFolder = os.path.abspath(os.path.join(os.path.dirname(__file__), 'recipes'))
 
 class Recipe:
     def __init__(self,title, ingredients,instructions):
@@ -18,12 +21,18 @@ class Recipe:
             print("{0}. {1}\n".format(stepNumber,step))
             stepNumber += 1
 
-
+    def saveToFile(self):
+        filePath = os.path.abspath(os.path.join(recipeFolder,self.title+'.json'))
+        with open(filePath, 'w') as f:
+            data = json.dumps(self.__dict__)
+            json.dump(data,f)
+    
 
 class RecipeManager:
 
     def start():
-        print("Welcome to your recipe book!")
+        print(recipeFolder)
+        print("\nWelcome to your recipe book!")
         choice = input("\nWhat would you like to do?"+
     """
     1. Add new recipe.
@@ -41,23 +50,7 @@ class RecipeManager:
         title = input("What is the name of your recipe?: ")
         ingredients = {}
         instructions = []
-
-        #ADD INSTRUCTION STEPS
-        adding = True
-        count = 1 
-        while(adding):
-            step = input("\nWhat is step #{}?: ".format(count))
-            confirm = input("Confirm step? (y or n): ")
-
-            if(confirm[0] == 'y'):             
-                instructions.append(step)
-                more = input("Would you like to add another step? (y or n): ")
-                #If no more steps
-                if(more[0] == 'n'):
-                    adding = False
-                else:
-                    count += 1
-        
+               
         #ADD INGREDIENTS
         adding = True
         count = 1
@@ -68,16 +61,35 @@ class RecipeManager:
 
             if(confirm[0] == 'y'):             
                 ingredients[ingred] = amount 
-                more = input("Would you like to add another ingredient? (y or n): ")
+                more = input("\nWould you like to add another ingredient? (y or n): ")
                 #If no more ingredients
                 if(more[0] == 'n'):
                     adding = False
                 else:
                     count += 1
+                    
+        #ADD INSTRUCTION STEPS
+        adding = True
+        count = 1 
+        while(adding):
+            step = input("\nWhat is step #{}?: ".format(count))
+            confirm = input("Confirm step? (y or n): ")
 
+            if(confirm[0] == 'y'):             
+                instructions.append(step)
+                more = input("\nWould you like to add another step? (y or n): ")
+                #If no more steps
+                if(more[0] == 'n'):
+                    adding = False
+                else:
+                    count += 1
 
         newRecipe = Recipe(title,ingredients,instructions)
         newRecipe.print()
+        newRecipe.saveToFile()
+
+
+        
                     
 
             
