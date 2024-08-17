@@ -28,11 +28,14 @@ class Recipe:
             json.dump(data,f)
 
     def openFromFile(fileName):
-        filePath = os.path.abspath(os.path.join(recipeFolder,fileName+'.json'))
-        f = open(filePath)
-        data = json.loads(json.load(f))
-        recipe = Recipe(data['title'],data['ingredients'],data['instructions'])
-        return recipe
+        if('.json' in fileName):
+            filePath = os.path.abspath(os.path.join(recipeFolder,fileName))
+            f = open(filePath)
+            data = json.loads(json.load(f))
+            recipe = Recipe(data['title'],data['ingredients'],data['instructions'])
+            return recipe
+        else:
+            return None
         
     
 
@@ -96,7 +99,14 @@ class RecipeManager:
         newRecipe.print()
         newRecipe.saveToFile()
 
-       
-recipe = Recipe.openFromFile("fluf")
-recipe.print()
+    def viewAllRecipes():
+        files = os.listdir(recipeFolder)
+        for f in files:           
+                recipe = Recipe.openFromFile(f)
+                if(type(recipe) == Recipe):
+                    print("\n----------------------------------------")
+                    recipe.print()
+
+      
+RecipeManager.viewAllRecipes()
 
