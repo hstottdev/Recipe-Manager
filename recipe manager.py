@@ -116,12 +116,17 @@ class RecipeManager:
 
     def printRecipes(searchCondition):
         print("\nRESULTS:")
+        numOfResults = 0
         files = RecipeManager.getRecipeFiles()
         for f in files:           
                 recipe = Recipe.openFromFile(f)
                 if(searchCondition(recipe)):
                     print("\n==================================")
                     recipe.print()
+                    numOfResults += 1
+
+        if(numOfResults == 0):
+            print("(~~Nothing found~~)")
 
     def searchRecipe():
         searchMode = input("Search recipe by?"+
@@ -129,7 +134,6 @@ class RecipeManager:
     1. Title
     2. Ingredients
     : """)
-        results = []
         if(searchMode == "1"):
             term = input("Which recipe are you looking for?: ")
             searchCondition = lambda r : term.lower() in r.title.lower()
