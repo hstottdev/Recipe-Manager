@@ -56,7 +56,10 @@ class RecipeManager:
         if(choice == "1"):
             RecipeManager.addRecipe()
         elif(choice == "2"):
-            RecipeManager.viewAllRecipes()
+            allRecipes = lambda r : type(r) == Recipe
+            RecipeManager.printRecipes(allRecipes)
+        elif(choice == "3"):
+            RecipeManager.searchRecipe()
         if(choice == "6"):
             return
 
@@ -111,16 +114,31 @@ class RecipeManager:
         return os.listdir(recipeFolder)
         
 
-    def viewAllRecipes():
-        print("\nALL RECIPES:")
+    def printRecipes(searchCondition):
+        print("\nRESULTS:")
         files = RecipeManager.getRecipeFiles()
         for f in files:           
                 recipe = Recipe.openFromFile(f)
-                if(type(recipe) == Recipe):
-                     print("\n- {}".format(recipe.title))
-         
-           
+                if(searchCondition(recipe)):
+                    print("\n==================================")
+                    recipe.print()
 
-print(recipeFolder)      
+    def searchRecipe():
+        searchMode = input("Search recipe by?"+
+    """
+    1. Title
+    2. Ingredients
+    : """)
+        results = []
+        if(searchMode == "1"):
+            term = input("Which recipe are you looking for?: ")
+            searchCondition = lambda r : term.lower() in r.title.lower()
+            RecipeManager.printRecipes(searchCondition)
+        elif(searchMode == "2"):
+            term = input("Which ingredient are you looking for?: ")
+            searchCondition = lambda r : term.lower() in map(str.lower, r.ingredients)
+            print("Recipes found with '{}'".format(term))
+            RecipeManager.printRecipes(searchCondition)
+                  
 RecipeManager.start()
 
