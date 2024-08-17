@@ -26,6 +26,14 @@ class Recipe:
         with open(filePath, 'w') as f:
             data = json.dumps(self.__dict__)
             json.dump(data,f)
+
+    def openFromFile(fileName):
+        filePath = os.path.abspath(os.path.join(recipeFolder,fileName+'.json'))
+        f = open(filePath)
+        data = json.loads(json.load(f))
+        recipe = Recipe(data['title'],data['ingredients'],data['instructions'])
+        return recipe
+        
     
 
 class RecipeManager:
@@ -34,7 +42,7 @@ class RecipeManager:
         print(recipeFolder)
         print("\nWelcome to your recipe book!")
         choice = input("\nWhat would you like to do?"+
-    """
+    """I think
     1. Add new recipe.
     2. View all recipes.
     3. Search for recipe.
@@ -88,10 +96,7 @@ class RecipeManager:
         newRecipe.print()
         newRecipe.saveToFile()
 
+       
+recipe = Recipe.openFromFile("fluf")
+recipe.print()
 
-        
-                    
-
-            
-            
-RecipeManager.start()    
