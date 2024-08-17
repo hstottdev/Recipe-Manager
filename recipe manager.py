@@ -42,20 +42,28 @@ class Recipe:
 class RecipeManager:
 
     def start():
-        print(recipeFolder)
         print("\nWelcome to your recipe book!")
         choice = input("\nWhat would you like to do?"+
-    """I think
+    """
     1. Add new recipe.
     2. View all recipes.
     3. Search for recipe.
     4. Edit a recipe.
     5. Delete a recipe.
-    
+    6. Close the recipe book.
     : """)
 
         if(choice == "1"):
             RecipeManager.addRecipe()
+        elif(choice == "2"):
+            RecipeManager.viewAllRecipes()
+        if(choice == "6"):
+            return
+
+        close = input("\nClose the recipe book? (y or n): ")
+
+        if(close[0] == 'n'):
+            RecipeManager.start()
             
     def addRecipe():
         title = input("What is the name of your recipe?: ")
@@ -99,14 +107,20 @@ class RecipeManager:
         newRecipe.print()
         newRecipe.saveToFile()
 
+    def getRecipeFiles():
+        return os.listdir(recipeFolder)
+        
+
     def viewAllRecipes():
-        files = os.listdir(recipeFolder)
+        print("\nALL RECIPES:")
+        files = RecipeManager.getRecipeFiles()
         for f in files:           
                 recipe = Recipe.openFromFile(f)
                 if(type(recipe) == Recipe):
-                    print("\n----------------------------------------")
-                    recipe.print()
+                     print("\n- {}".format(recipe.title))
+         
+           
 
-      
-RecipeManager.viewAllRecipes()
+print(recipeFolder)      
+RecipeManager.start()
 
