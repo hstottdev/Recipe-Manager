@@ -33,6 +33,7 @@ class Recipe:
 : """)
         if(choice == "1"):
             newTitle = input("Enter new recipe title: ")
+            self.delete()
             self.title = newTitle
         if(choice == "2"):
             ingredNumber = len(self.ingredients)+1
@@ -60,6 +61,10 @@ class Recipe:
             return recipe
         else:
             return None
+
+    def delete(self):
+        filePath = os.path.abspath(os.path.join(recipeFolder,self.title+'.json'))
+        os.remove(filePath)
     
         
     
@@ -88,6 +93,9 @@ class RecipeManager:
         elif(choice == "4"):
             edit = lambda r : r.edit()
             RecipeManager.selectRecipe(edit)
+        elif(choice == "5"):
+            delete = lambda r : r.delete()
+            RecipeManager.selectRecipe(delete,"Recipe Deleted")
         if(choice == "6"):
             return
 
@@ -170,7 +178,7 @@ class RecipeManager:
             print("Recipes found with '{}'".format(term))
             RecipeManager.printRecipes(searchCondition)
 
-    def selectRecipe(func):
+    def selectRecipe(func, msg = "Recipe Selected!"):
         print("\nRECIPES: \n")
         files = RecipeManager.getRecipeFiles()
         #print recipes as a list to present to user
@@ -184,8 +192,8 @@ class RecipeManager:
         title = input("\nWhich recipe do you want to select?: ")
 
         #check user input is valid
-        if(title.lower() + '.json' in map(str.lower,files)):
-            print("recipe exists!")
+        if(title + '.json' in files):
+            print(msg)
         else:
             print("invalid recipe")
             RecipeManager.editRecipe()
