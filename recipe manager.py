@@ -35,14 +35,16 @@ class Recipe:
             newTitle = input("Enter new recipe title: ")
             self.delete()
             self.title = newTitle
-        if(choice == "2"):
+        elif(choice == "2"):
             ingredNumber = len(self.ingredients)+1
             ingred = input("\nWhat is ingredient #{}?: ".format(ingredNumber))
             amount = input("How much {} is required?: ".format(ingred))
             self.ingredients[ingred] = amount
-        if(choice == "3"):
+        elif(choice == "3"):
             step = input("\nWhat is step #{}?: ".format(len(self.instructions)))
             instructions.append(step)
+        else:
+            edit()
 
         self.saveToFile()
 
@@ -177,6 +179,8 @@ class RecipeManager:
             searchCondition = lambda r : term.lower() in map(str.lower, r.ingredients)
             print("Recipes found with '{}'".format(term))
             RecipeManager.printRecipes(searchCondition)
+        else:
+            searchRecipe()
 
     def selectRecipe(func, msg = "Recipe Selected!"):
         print("\nRECIPES: \n")
