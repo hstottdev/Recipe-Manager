@@ -33,6 +33,7 @@ class Recipe:
 : """)
         if(choice == "1"):
             newTitle = input("Enter new recipe title: ")
+            #When changing the title delete the recipe file and replace it
             self.delete()
             self.title = newTitle
         elif(choice == "2"):
@@ -73,6 +74,7 @@ class Recipe:
 
 class RecipeManager:
 
+    #This is run by the program first
     def start():
         print("\nWelcome to your recipe book!")
         choice = input("\nWhat would you like to do?"+
@@ -98,8 +100,11 @@ class RecipeManager:
         elif(choice == "5"):
             delete = lambda r : r.delete()
             RecipeManager.selectRecipe(delete,"Recipe Deleted")
-        if(choice == "6"):
+        elif(choice == "6"):
             return
+        else:
+            #Choice is invalid
+            RecipeManager.start()
 
         close = input("\nClose the recipe book? (y or n): ")
 
@@ -172,7 +177,9 @@ class RecipeManager:
     : """)
         if(searchMode == "1"):
             term = input("Which recipe are you looking for?: ")
+            #Lambda condition is used to compare results when searching
             searchCondition = lambda r : term.lower() in r.title.lower()
+            #Uses the printRecipes function to print results that match the above lambda condition
             RecipeManager.printRecipes(searchCondition)
         elif(searchMode == "2"):
             term = input("Which ingredient are you looking for?: ")
